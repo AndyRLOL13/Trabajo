@@ -205,13 +205,12 @@ def mostrar_login():
     tk.Button(login_win, text="Iniciar sesión", command=lambda: iniciar_sesion(entry_usuario.get(), entry_contra.get(), login_win)).pack(pady=8)
     tk.Button(login_win, text="Registrar usuario", command=lambda: registrar_usuario(entry_usuario.get(), entry_contra.get(), login_win)).pack()
 
-    # Centrar ventana y bloquear root mientras esté activa
     root.eval(f'tk::PlaceWindow {str(login_win)} center')
     login_win.grab_set()
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.withdraw()  # oculta la ventana raíz principal
+    root.withdraw()
     mostrar_login()
     root.mainloop()
 
