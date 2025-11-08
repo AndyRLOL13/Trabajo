@@ -223,7 +223,6 @@ def add_admin_role(user_id: int, db: Session = Depends(get_db), _: User = Depend
 
 @app.get("/tokens")
 def get_tokens(_: User = Depends(get_current_admin)):
-    """Devuelve los tokens guardados localmente (solo admin)."""
     try:
         with open("data/tokens.json", "r", encoding="utf-8") as f:
             return [json.loads(line) for line in f.readlines()]
