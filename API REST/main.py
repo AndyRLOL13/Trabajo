@@ -12,9 +12,6 @@ from sqlalchemy.orm import relationship, sessionmaker, Session
 import json
 import os
 
-# ==============================================
-# CONFIGURACIÓN GENERAL
-# ==============================================
 SECRET_KEY = "supersecretkey"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -29,9 +26,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 app = FastAPI(title="API REST con Tokens y Roles")
 
-# ==============================================
-# MODELOS DE BASE DE DATOS
-# ==============================================
 user_roles = Table(
     "user_roles",
     Base.metadata,
@@ -58,10 +52,6 @@ class Role(Base):
 
 Base.metadata.create_all(bind=engine)
 
-
-# ==============================================
-# ESQUEMAS Pydantic
-# ==============================================
 class UserCreate(BaseModel):
     username: str
     password: str
@@ -80,10 +70,6 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-
-# ==============================================
-# UTILIDADES
-# ==============================================
 def get_password_hash(password: str):
     return pwd_context.hash(password)
 
@@ -120,9 +106,6 @@ def get_db():
         db.close()
 
 
-# ==============================================
-# CREACIÓN INICIAL DE ADMIN Y ROLES
-# ==============================================
 def init_db():
     db = SessionLocal()
     admin_role = db.query(Role).filter_by(name="ADMIN").first()
@@ -148,9 +131,6 @@ def init_db():
 init_db()
 
 
-# ==============================================
-# AUTENTICACIÓN Y REGISTRO
-# ==============================================
 @app.post("/auth/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
     if get_user_by_username(db, user_in.username):
@@ -190,9 +170,6 @@ def change_user_role(username: str, new_role: str = Query(...), db: Session = De
     db.commit()
     return {"message": f"Rol de {username} cambiado a {new_role.upper()}"}
 
-# ==============================================
-# DEPENDENCIAS DE TOKEN
-# ==============================================
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(status_code=401, detail="Token inválido o expirado")
     try:
@@ -214,9 +191,6 @@ def get_current_admin(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-# ==============================================
-# ENDPOINTS DE USUARIOS Y ROLES
-# ==============================================
 @app.get("/users/me", response_model=UserOut)
 def read_users_me(current_user: User = Depends(get_current_user)):
     return {"id": current_user.id, "username": current_user.username, "roles": [r.name for r in current_user.roles]}
@@ -256,10 +230,6 @@ def get_tokens(_: User = Depends(get_current_admin)):
     except FileNotFoundError:
         return []
 
-
-# ==============================================
-# EJECUCIÓN LOCAL
-# ==============================================
 if __name__ == "__main__":
     import uvicorn
 

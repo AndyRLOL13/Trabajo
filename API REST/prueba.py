@@ -5,7 +5,6 @@ import os
 
 API_URL = "http://127.0.0.1:8000"
 
-# Globals
 token_actual = None
 usuario_actual = None
 root = None
@@ -23,9 +22,6 @@ def obtener_headers():
     return {}
 
 
-# =======================
-# LOGIN / REGISTRO
-# =======================
 def iniciar_sesion(usuario, contrasena, login_win):
     global token_actual, usuario_actual
     if not usuario or not contrasena:
@@ -81,9 +77,6 @@ def registrar_usuario(usuario, contrasena, login_win):
         messagebox.showerror("Error", f"No se pudo conectar al servidor:\n{e}")
 
 
-# =======================
-# INTERFACES
-# =======================
 def cerrar_sesion(win):
     global token_actual, usuario_actual
     token_actual = None
@@ -196,9 +189,6 @@ def abrir_cambio_rol(win):
     tk.Button(dlg, text="Confirmar", command=confirmar).pack(pady=10)
 
 
-# =======================
-# LOGIN WINDOW
-# =======================
 def mostrar_login():
     login_win = tk.Toplevel(root)
     login_win.title("Inicio de sesión - API REST")
@@ -219,10 +209,6 @@ def mostrar_login():
     root.eval(f'tk::PlaceWindow {str(login_win)} center')
     login_win.grab_set()
 
-
-# =======================
-# MAIN
-# =======================
 if __name__ == "__main__":
     root = tk.Tk()
     root.withdraw()  # oculta la ventana raíz principal
